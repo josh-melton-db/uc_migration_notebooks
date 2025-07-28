@@ -81,21 +81,15 @@ def setup_python_path():
     else:
         print(f"ℹ️  {current_dir} already in Python path")
     
-    # Verify the databricks package structure exists
-    databricks_path = os.path.join(current_dir, 'databricks')
-    migrator_path = os.path.join(current_dir, 'databricks', 'labs', 'migrator')
+    # Verify the migrator package structure exists
+    migrator_path = os.path.join(current_dir, 'migrator')
     
     print(f"🔍 Checking package structure:")
-    print(f"   - databricks/ exists: {os.path.exists(databricks_path)}")
-    print(f"   - databricks/labs/migrator/ exists: {os.path.exists(migrator_path)}")
+    print(f"   - migrator/ exists: {os.path.exists(migrator_path)}")
     
-    if not os.path.exists(databricks_path):
-        print(f"❌ ERROR: databricks/ directory not found at {databricks_path}")
-        print(f"📁 Current directory contents: {os.listdir(current_dir)}")
-        return False
-        
     if not os.path.exists(migrator_path):
-        print(f"❌ ERROR: databricks/labs/migrator/ directory not found at {migrator_path}")
+        print(f"❌ ERROR: migrator/ directory not found at {migrator_path}")
+        print(f"📁 Current directory contents: {os.listdir(current_dir)}")
         return False
     
     print(f"✅ Package structure verified")
@@ -108,25 +102,9 @@ def import_migrator():
         from databricks.sdk import WorkspaceClient
         print("✅ Successfully imported databricks-sdk")
         
-        # Try importing the migrator package with more detailed error info
-        try:
-            import migrator
-            print("✅ Successfully imported migrator package")
-        except ImportError as e:
-            print(f"❌ Failed to import migrator package: {e}")
-            print("")
-            print("🔍 Debugging info:")
-            print(f"   - Python path: {sys.path[:3]}...")  # Show first few entries
-            print(f"   - Current working directory: {os.getcwd()}")
-            
-            # Try to import the underlying package directly
-            try:
-                import databricks.labs.migrator
-                print("✅ Successfully imported databricks.labs.migrator directly")
-            except ImportError as e2:
-                print(f"❌ Failed to import databricks.labs.migrator: {e2}")
-                raise e
-            raise e
+        # Import the migrator package directly
+        import migrator
+        print("✅ Successfully imported migrator package")
         
         print("📋 Available components:")
         print("   - migrator.assessment: Main installer class")

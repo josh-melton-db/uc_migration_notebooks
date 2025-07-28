@@ -128,7 +128,44 @@ class GlobalContext(abc.ABC):
 
     @cached_property
     def product_info(self) -> ProductInfo:
-        return ProductInfo.from_class(WorkspaceConfig)
+        try:
+            return ProductInfo.from_class(WorkspaceConfig)
+        except NotADirectoryError:
+            # Handle packaged distribution case where there's no git repository
+            from migrator.__about__ import __version__
+            from pathlib import Path
+            import tempfile
+            
+            # Create a minimal ProductInfo for packaged distribution
+            class PackagedProductInfo:
+                def __init__(self, version: str):
+                    self._version_str = version
+                    self._product_name = "ucx"
+                
+                def version(self) -> str:
+                    return self._version_str
+                
+                def product_name(self) -> str:
+                    return self._product_name
+                
+                def current_installation(self, workspace_client):
+                    from databricks.labs.blueprint.installation import Installation
+                    return Installation.assume_global(workspace_client, self.product_name())
+                
+                def wheels(self, workspace_client):
+                    from databricks.labs.blueprint.wheels import WheelsV2
+                    # Create a dummy installation for wheels
+                    installation = self.current_installation(workspace_client)
+                    return WheelsV2(installation, self)
+                    
+                def checkout_root(self) -> Path:
+                    # Return current directory for packaged distribution
+                    return Path.cwd()
+                
+                def is_git_checkout(self) -> bool:
+                    return False
+            
+            return PackagedProductInfo(__version__)
 
     @cached_property
     def installation(self) -> Installation:

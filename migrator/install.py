@@ -185,7 +185,13 @@ class WorkspaceInstaller(WorkspaceContext):
         default_config: WorkspaceConfig | None = None,
         config: WorkspaceConfig | None = None,
     ) -> WorkspaceConfig:
-        logger.info(f"Installing UCX v{self.product_info.version()}")
+        try:
+            version_str = self.product_info.version()
+        except NotADirectoryError:
+            # Handle packaged distribution case
+            from migrator.__about__ import __version__
+            version_str = __version__
+        logger.info(f"Installing UCX v{version_str}")
         try:
             if config is None:
                 config = self.configure(default_config)
@@ -495,7 +501,43 @@ class WorkspaceInstallation(InstallationMixin):
     @classmethod
     def current(cls, ws: WorkspaceClient):
         # TODO: remove this method, it's no longer needed
-        product_info = ProductInfo.from_class(WorkspaceConfig)
+        try:
+            product_info = ProductInfo.from_class(WorkspaceConfig)
+        except NotADirectoryError:
+            # Handle packaged distribution case where there's no git repository
+            from migrator.__about__ import __version__
+            from pathlib import Path
+            
+            # Create a minimal ProductInfo for packaged distribution
+            class PackagedProductInfo:
+                def __init__(self, version: str):
+                    self._version_str = version
+                    self._product_name = "ucx"
+                
+                def version(self) -> str:
+                    return self._version_str
+                
+                def product_name(self) -> str:
+                    return self._product_name
+                
+                def current_installation(self, workspace_client):
+                    from databricks.labs.blueprint.installation import Installation
+                    return Installation.assume_global(workspace_client, self.product_name())
+                
+                def wheels(self, workspace_client):
+                    from databricks.labs.blueprint.wheels import WheelsV2
+                    # Create a dummy installation for wheels
+                    installation = self.current_installation(workspace_client)
+                    return WheelsV2(installation, self)
+                    
+                def checkout_root(self) -> Path:
+                    # Return current directory for packaged distribution
+                    return Path.cwd()
+                
+                def is_git_checkout(self) -> bool:
+                    return False
+            
+            product_info = PackagedProductInfo(__version__)
         installation = product_info.current_installation(ws)
         install_state = InstallState.from_installation(installation)
         config = installation.load(WorkspaceConfig)

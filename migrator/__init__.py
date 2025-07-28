@@ -17,8 +17,8 @@ Usage:
 
 # Now import the key classes directly from the migrator package (no databricks.labs prefix needed)
 try:
-    from migrator.installer.workflows import WorkspaceInstaller
-    from migrator.contexts.workflow_task import WorkspaceConfig
+    from migrator.install import WorkspaceInstaller
+    from migrator.config import WorkspaceConfig
     
     # Convenience function for the main use case
     def assessment(workspace_client):

@@ -41,20 +41,22 @@ except ImportError as e:
     import os
     import sys
     
+    # Capture the error message for later use
+    _import_error_message = str(e)
     _current_dir = os.path.dirname(os.path.abspath(__file__))
     
     def assessment(workspace_client):
         raise ImportError(
-            f"Failed to import migrator components: {e}\n"
+            f"Failed to import migrator components: {_import_error_message}\n"
             f"Current directory: {_current_dir}\n"
             f"Python path: {sys.path[:3]}...\n"
             "Please ensure the migrator package is properly installed."
         )
     
     def WorkspaceInstaller(workspace_client):
-        raise ImportError(f"Failed to import WorkspaceInstaller: {e}")
+        raise ImportError(f"Failed to import WorkspaceInstaller: {_import_error_message}")
     
     def WorkspaceConfig(workspace_client):
-        raise ImportError(f"Failed to import WorkspaceConfig: {e}")
+        raise ImportError(f"Failed to import WorkspaceConfig: {_import_error_message}")
     
     __all__ = ['assessment', 'WorkspaceInstaller', 'WorkspaceConfig']

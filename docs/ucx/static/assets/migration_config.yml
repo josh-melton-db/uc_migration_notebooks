@@ -1,9 +1,0 @@
-inventory_database: unity_catalog_migration
-
-warehouse_id: None
-
-groups:
-  selected: [ "analyst" ]
-
-num_threads: 80
-

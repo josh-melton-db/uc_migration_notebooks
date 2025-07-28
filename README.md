@@ -1,44 +1,85 @@
-# UCX by Databricks Labs
+# Migrator - Unity Catalog Migration Toolkit
 
-<p align="center">
-    <a href="https://github.com/databrickslabs/ucx">
-        <img src="./docs/ucx/static/img/logo.svg" class="align-center" width="200" height="200" alt="logo" />
-    </a>
-</p>
+A simple, notebook-driven Unity Catalog migration toolkit for Databricks workspaces.
 
-<p align="center">
-    <b>🚀 UCX - Unity Catalog Migration Assistant</b>
-</p>
+## Quick Start
 
-UCX is a toolkit for enabling Unity Catalog (UC) in your Databricks workspace. UCX provides commands and workflows for migrate tables and views to UC. UCX allows to rewrite dashboards, jobs and notebooks to use the migrated data assets in UC. And there are many more features
+### 1. Upload to Databricks
+- Go to your Databricks workspace
+- Navigate to **Workspace** → **Import** 
+- Select **Source** format and upload `migrator_dist.zip`
+- Files will be extracted to `/Workspace/migrator_dist/`
 
+### 2. Run Installation
+- Open the `install_migrator.py` script in a Databricks notebook
+- Run the script (dependencies install automatically)
+- Follow the interactive prompts to configure your migration
 
-[![build](https://github.com/databrickslabs/ucx/actions/workflows/push.yml/badge.svg)](https://github.com/databrickslabs/ucx/actions/workflows/push.yml) [![codecov](https://codecov.io/github/databrickslabs/ucx/graph/badge.svg?token=p0WKAfW5HQ)](https://codecov.io/github/databrickslabs/ucx)  ![linesofcode](https://aschey.tech/tokei/github/databrickslabs/ucx?category=code)
+### 3. Start Assessment
+```python
+import migrator
+from databricks.sdk import WorkspaceClient
 
-# Documentation
+migrator.assessment(WorkspaceClient()).run()
+```
 
-Please refer to the [UCX documentation](https://databrickslabs.github.io/ucx/) for detailed information on how to use UCX.
+## What Gets Installed
 
+The migrator creates:
+- **Assessment Workflow**: Analyzes your workspace for Unity Catalog readiness
+- **Migration Database**: Stores assessment results and migration progress  
+- **Interactive Dashboards**: Visualizes migration findings and recommendations
+- **Configuration**: Workspace-level settings for the migration toolkit
 
-# Developer documentation
+## Requirements
 
-Please refer to the [developer documentation](https://databrickslabs.github.io/ucx/docs/dev/) for information on how to contribute to UCX.
+- Databricks Premium or Enterprise workspace
+- Workspace Admin privileges
+- PRO or Serverless SQL Warehouse
+- Python 3.10+ (available in Databricks Runtime)
 
-# Troubleshooting
+## Installation Options
 
-For questions, troubleshooting or bug fixes, please see our [troubleshooting guide](https://databrickslabs.github.io/ucx/docs/reference/troubleshooting/). 
+### Option A: Cluster Libraries (Recommended)
+1. Go to your cluster configuration
+2. **Libraries** → **Install New** → **Upload** → **Python**
+3. Upload `migrator_dist.zip`
+4. Restart cluster
+5. All notebooks can now `import migrator`
 
-# Feedback
+### Option B: Per-Notebook Import
+```python
+import sys
+sys.path.insert(0, '/Workspace/migrator_dist')
+import migrator
+```
 
-We welcome your feedback! Please submit an [an issue](https://github.com/databrickslabs/ucx/issues).
+## Next Steps
 
+After installation:
+1. Go to **Jobs** in your Databricks workspace
+2. Find and run the **Migrator - Assessment** workflow  
+3. View results in the auto-generated dashboards
+4. Follow dashboard recommendations for migration planning
 
-# Star History
+## Troubleshooting
 
-[![Star History Chart](https://api.star-history.com/svg?repos=databrickslabs/ucx&type=Date)](https://star-history.com/#databrickslabs/ucx)
+**Import errors?**
+```python
+%pip install databricks-sdk databricks-labs-lsql databricks-labs-blueprint PyYAML sqlglot astroid
+dbutils.library.restartPython()
+```
 
+**Installation fails?**
+- Ensure you have Workspace Admin privileges
+- Verify you have a PRO or Serverless SQL Warehouse available
+- Check that your cluster has internet access
 
-# Project Support
-Please note that all projects in the databrickslabs GitHub account are provided for your exploration only, and are not formally supported by Databricks with Service Level Agreements (SLAs).  They are provided AS-IS, and we do not make any guarantees of any kind.  Please do not submit a support ticket relating to any issues arising from the use of these projects.
+**Need help?**
+- Review the installation notebook output for detailed error messages
+- Check the generated dashboards for migration guidance
+- Verify all prerequisites are met
 
-Any issues discovered through the use of this project should be filed as GitHub Issues on the Repo.  They will be reviewed as time permits, but there are no formal SLAs for support.
+---
+
+*This toolkit helps migrate Databricks workspaces to Unity Catalog with minimal complexity.*

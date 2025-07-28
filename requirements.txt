@@ -1,0 +1,27 @@
+# Dependencies for UCX Migration Toolkit
+# 
+# This file contains all the required dependencies for running the 
+# Unity Catalog migration assessment and migration tools.
+#
+# Installation:
+#   pip install -r requirements.txt
+#
+# Or in Databricks notebooks:
+#   %pip install -r requirements.txt
+#   dbutils.library.restartPython()
+
+# Core Databricks SDK
+databricks-sdk>=0.58.0,<0.59.0
+
+# Databricks Labs packages
+databricks-labs-lsql>=0.16.0,<0.17.0
+databricks-labs-blueprint>=0.11.0,<0.12.0
+
+# Configuration and data processing
+PyYAML>=6.0.0,<6.1.0
+
+# SQL parsing and analysis
+sqlglot>=26.7.0,<27.1.0
+
+# Python code analysis
+astroid>=3.3.0,<3.4.0 

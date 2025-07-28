@@ -8,15 +8,22 @@ Prerequisites:
 1. Workspace Admin privileges
 2. A PRO or Serverless SQL Warehouse
 3. Import the migrator ZIP file into your workspace
-4. Run this script in a Databricks notebook or Python environment
+4. Install dependencies (see Usage below)
+5. Run this script in a Databricks notebook or Python environment
 
 Usage:
+    # Option 1: Install dependencies automatically
+    python install_migrator.py
+    
+    # Option 2: Install dependencies manually first
+    pip install -r requirements.txt
     python install_migrator.py
 
 Instructions:
-1. Run this script in a Databricks environment
-2. Follow the prompts to configure your installation
-3. The assessment workflow will be created and can be run from the Jobs UI
+1. Install dependencies using one of the methods above
+2. Run this script in a Databricks environment
+3. Follow the prompts to configure your installation
+4. The assessment workflow will be created and can be run from the Jobs UI
 """
 
 import sys
@@ -28,6 +35,10 @@ def install_dependencies():
     """Install required dependencies for the migrator."""
     print("📦 Installing required dependencies...")
     print("This may take a few minutes on first run.")
+    print("")
+    print("💡 Alternative: You can also install dependencies using:")
+    print("   pip install -r requirements.txt")
+    print("")
     
     try:
         # Check if we're in Databricks environment
@@ -117,6 +128,8 @@ def import_migrator():
         print(f"❌ Import error: {e}")
         print("")
         print("🔧 Try installing missing dependencies by running:")
+        print("   pip install -r requirements.txt")
+        print("   OR")
         print("   pip install databricks-sdk databricks-labs-lsql databricks-labs-blueprint PyYAML sqlglot astroid")
         print("   Then restart this script.")
         raise
@@ -164,6 +177,8 @@ def run_installation(workspace_client, installer):
         print(f"❌ Import error: {e}")
         print("")
         print("🔧 Try installing missing dependencies:")
+        print("   pip install -r requirements.txt")
+        print("   OR")
         print("   pip install databricks-sdk databricks-labs-lsql databricks-labs-blueprint PyYAML sqlglot astroid")
         print("   Then restart this script and try again.")
         return False

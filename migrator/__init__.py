@@ -15,22 +15,10 @@ Usage:
     config = migrator.WorkspaceConfig(WorkspaceClient())
 """
 
-import sys
-import os
-
-# Ensure the databricks.labs.migrator package can be found
-# Get the parent directory of this migrator package
-_current_dir = os.path.dirname(os.path.abspath(__file__))
-_parent_dir = os.path.dirname(_current_dir)
-
-# Add the parent directory to Python path if not already there
-if _parent_dir not in sys.path:
-    sys.path.insert(0, _parent_dir)
-
-# Now import the key classes from the migrator package
+# Now import the key classes directly from the migrator package (no databricks.labs prefix needed)
 try:
-    from databricks.labs.migrator.installer.workflows import WorkspaceInstaller
-    from databricks.labs.migrator.contexts.workflow_task import WorkspaceConfig
+    from migrator.installer.workflows import WorkspaceInstaller
+    from migrator.contexts.workflow_task import WorkspaceConfig
     
     # Convenience function for the main use case
     def assessment(workspace_client):
@@ -50,13 +38,17 @@ try:
     
 except ImportError as e:
     # If imports fail, provide a helpful error message
+    import os
+    import sys
+    
+    _current_dir = os.path.dirname(os.path.abspath(__file__))
+    
     def assessment(workspace_client):
         raise ImportError(
             f"Failed to import migrator components: {e}\n"
             f"Current directory: {_current_dir}\n"
-            f"Parent directory: {_parent_dir}\n"
             f"Python path: {sys.path[:3]}...\n"
-            "Please ensure the databricks/labs/migrator package is properly installed."
+            "Please ensure the migrator package is properly installed."
         )
     
     def WorkspaceInstaller(workspace_client):
@@ -65,4 +57,4 @@ except ImportError as e:
     def WorkspaceConfig(workspace_client):
         raise ImportError(f"Failed to import WorkspaceConfig: {e}")
     
-    __all__ = ['assessment', 'WorkspaceInstaller', 'WorkspaceConfig'] 
+    __all__ = ['assessment', 'WorkspaceInstaller', 'WorkspaceConfig']

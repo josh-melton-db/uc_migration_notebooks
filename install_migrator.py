@@ -66,8 +66,14 @@ def install_dependencies():
 
 def setup_python_path():
     """Add the migrator package to Python path."""
-    # Get the current script directory
-    current_dir = os.path.dirname(os.path.abspath(__file__))
+    # Get the current directory - works in both script and notebook environments
+    try:
+        # Try to get the script directory first (works in regular Python scripts)
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+    except NameError:
+        # __file__ is not defined in Databricks notebooks, use current working directory
+        current_dir = os.getcwd()
+        print(f"ℹ️  Running in notebook environment, using current directory: {current_dir}")
     
     if current_dir not in sys.path:
         sys.path.insert(0, current_dir)

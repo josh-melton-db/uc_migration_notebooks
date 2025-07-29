@@ -21,7 +21,7 @@ databricks-labs-blueprint>=0.11.0,<0.12.0
 PyYAML>=6.0.0,<6.1.0
 
 # SQL parsing and analysis
-sqlglot>=26.7.0,<27.1.0
+sqlglot>=26.7.0,<27.5.0
 
 # Python code analysis
 astroid>=3.3.0,<3.4.0 

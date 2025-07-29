@@ -11,7 +11,7 @@
 #   dbutils.library.restartPython()
 
 # Core Databricks SDK
-databricks-sdk>=0.58.0,<0.59.0
+databricks-sdk>=0.58.0,<0.61.0
 
 # Databricks Labs packages
 databricks-labs-lsql>=0.16.0,<0.17.0
